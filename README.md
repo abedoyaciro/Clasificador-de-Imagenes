@@ -68,12 +68,32 @@ Crear una herramienta local de clasificación automática de imágenes mediante 
 
 /Clasificación_de_Imágenes
 │
-├── app.py # Interfaz principal con Streamlit
-├── procesador_img.py # Módulo de lógica: detección, agrupación, renombrado
-├── /source # Carpeta donde el usuario carga imágenes
-├── /processed # Carpeta de salida con grupos creados
-├── requirements.txt # Lista de dependencias del proyecto
-└── README.md # Documentación del proyecto
+├── app.py                    ← Interfaz principal (Streamlit o consola)
+├── main.py                   ← Entrada principal para ejecución en consola
+├── requirements.txt
+├── README.md
+│
+├── /core                     ← Lógica del negocio (clustering, detección, organización)
+│   ├── procesamiento.py      ← cargar_imagenes, extraer_rostros, organizar_imagenes
+│   ├── clustering.py         ← agrupar_por_rostros (DBSCAN)
+│   ├── cache.py              ← guardar_rostros_cache, cargar_rostros_cache
+│
+├── /interface                ← Entrada y validación humana
+│   ├── clasificador.py       ← clasificar_rostro, mostrar_imagen
+│   ├── validador.py          ← flujo interactivo de confirmación
+│
+├── /data
+│   ├── source/               ← Imágenes originales
+│   ├── processed/            ← Resultado clasificado
+│   ├── rostros_cache.npz     ← Cache de encodings
+│   ├── clasificaciones.json  ← Historial de clasificaciones
+│
+├── /utils
+│   ├── visor.py              ← Funciones de visualización (OpenCV, PIL, matplotlib)
+│   ├── helpers.py            ← Funciones auxiliares (formato, logs, resolución, etc.)
+│
+└── /entrenamiento            ← (Futuro) módulo incremental de aprendizaje
+    ├── entrenador.py         ← reconstruir_base_entrenada
 ```
 
 ---
@@ -98,3 +118,33 @@ Crear una herramienta local de clasificación automática de imágenes mediante 
 - [ ] Crear interfaz en Streamlit para cargar, visualizar y controlar el proceso.
 - [ ] Agregar opción de clasificación manual asistida.
 - [ ] Agregar botón para reiniciar y limpiar las carpetas.
+
+# README.md (resumen inicial)
+
+"""
+# Clasificador de Rostros con Validación Humana
+
+Este proyecto utiliza reconocimiento facial automático con validación humana para clasificar, organizar y mejorar progresivamente la identificación de personas en fotografías.
+
+## Características
+- Detección de rostros con `face_recognition`
+- Agrupación automática con `DBSCAN`
+- Validación y corrección asistida por el usuario
+- Memoria persistente de clasificaciones previas
+- Interfaz en consola y posibilidad de interfaz gráfica
+
+## Estructura
+- `core/`: Módulos de lógica (detección, clustering, cache, organización)
+- `interface/`: Clasificador interactivo (humano en el ciclo)
+- `data/`: Imágenes fuente, resultados, cache y JSON de etiquetas
+
+## Requisitos
+```bash
+conda activate clasificador-img
+pip install -r requirements.txt
+```
+
+## Uso
+```bash
+python main.py
+```
